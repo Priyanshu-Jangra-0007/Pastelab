@@ -1,0 +1,72 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* PasteLab Global Styles */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: black;
+}
+
+/* Prose styles for markdown rendering */
+.prose {
+  color: #e5e7eb;
+  max-width: none;
+}
+
+.prose pre {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 1rem 0 !important;
+}
+
+.prose code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.prose a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: white;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
