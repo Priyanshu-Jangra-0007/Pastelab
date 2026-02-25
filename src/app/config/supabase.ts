@@ -31,10 +31,13 @@ const normalizedRoutePrefix = functionRoutePrefix
   ? `/${functionRoutePrefix.replace(/^\/+|\/+$/g, '')}`
   : '';
 const normalizedServerUrlOverride = envServerUrl?.replace(/\/+$/g, '');
+const defaultServerUrl = import.meta.env.DEV
+  ? '/api'
+  : `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`;
 
 export const supabase = createClient(supabaseUrl, publicAnonKey);
 
 // Server API base URL: https://<project>.supabase.co/functions/v1/<functionName>[/optional-prefix]
 export const serverUrl =
   normalizedServerUrlOverride ||
-  `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`;
+  defaultServerUrl;
