@@ -4,6 +4,7 @@ import { projectId as fallbackProjectId, publicAnonKey as fallbackAnonKey } from
 const envSupabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
 const envProjectId = import.meta.env.VITE_SUPABASE_PROJECT_ID?.trim();
 const envAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
+const envPublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
 const envServerUrl = import.meta.env.VITE_SERVER_URL?.trim();
 const functionName = import.meta.env.VITE_SUPABASE_FUNCTION_NAME?.trim() || 'server';
 const functionRoutePrefix = import.meta.env.VITE_SUPABASE_FUNCTION_ROUTE_PREFIX?.trim() || '';
@@ -18,10 +19,12 @@ if (!supabaseUrl) {
   );
 }
 
-export const publicAnonKey = envAnonKey || fallbackAnonKey;
+export const publicAnonKey = envAnonKey || envPublishableKey || fallbackAnonKey;
 
 if (!publicAnonKey) {
-  throw new Error('Missing Supabase anon key. Set VITE_SUPABASE_ANON_KEY in your .env file.');
+  throw new Error(
+    'Missing Supabase public key. Set VITE_SUPABASE_ANON_KEY or VITE_SUPABASE_PUBLISHABLE_KEY in your .env file.'
+  );
 }
 
 const normalizedRoutePrefix = functionRoutePrefix
