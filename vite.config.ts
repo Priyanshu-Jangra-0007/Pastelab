@@ -17,6 +17,22 @@ export default defineConfig(({ mode }) => {
   const proxyTarget = supabaseUrl
     ? `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`
     : undefined
+  const devServerConfig = {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
+    ...(proxyTarget
+      ? {
+          proxy: {
+            '/api': {
+              target: proxyTarget,
+              changeOrigin: true,
+              rewrite: (p) => p.replace(/^\/api/, ''),
+            },
+          },
+        }
+      : {}),
+  }
 
   return {
     plugins: [
@@ -31,17 +47,7 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    server: proxyTarget
-      ? {
-          proxy: {
-            '/api': {
-              target: proxyTarget,
-              changeOrigin: true,
-              rewrite: (p) => p.replace(/^\/api/, ''),
-            },
-          },
-        }
-      : undefined,
+    server: devServerConfig,
 
     // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
     assetsInclude: ['**/*.svg', '**/*.csv'],
