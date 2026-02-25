@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Button } from '../components/ui/button';
-import { Copy, Download, Eye, Clock, Loader2, AlertCircle, QrCode as QrCodeIcon } from 'lucide-react';
+import { Copy, Download, Eye, Clock, Loader2, AlertCircle } from 'lucide-react';
 import { getPaste, downloadAsFile, getTimeRemaining, formatDate, PasteData } from '../utils/pasteUtils';
 import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
@@ -18,7 +18,6 @@ export function ShareView() {
   const [paste, setPaste] = useState<PasteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showQR, setShowQR] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const shareUrl = `${window.location.origin}/share/${code}`;
@@ -174,37 +173,29 @@ export function ShareView() {
                 readOnly
                 className="flex-1 rounded-lg border border-white/10 bg-black/40 px-4 py-2 text-white"
               />
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleCopy}
-                  variant="outline"
-                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-                >
-                  <Copy className="mr-2 h-4 w-4" />
-                  {copied ? 'Copied!' : 'Copy'}
-                </Button>
-                <Button
-                  onClick={() => setShowQR(!showQR)}
-                  variant="outline"
-                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-                >
-                  <QrCodeIcon className="h-4 w-4" />
-                </Button>
-              </div>
+              <Button
+                onClick={handleCopy}
+                variant="outline"
+                className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+              >
+                <Copy className="mr-2 h-4 w-4" />
+                {copied ? 'Copied!' : 'Copy'}
+              </Button>
             </div>
 
             {/* QR Code */}
-            {showQR && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-6 flex justify-center"
-              >
-                <div className="rounded-xl bg-white p-4">
-                  <QRCodeSVG value={shareUrl} size={200} />
-                </div>
-              </motion.div>
-            )}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 flex flex-col items-center justify-center gap-3"
+            >
+              <div className="rounded-xl bg-white p-4">
+                <QRCodeSVG value={shareUrl} size={200} level="H" includeMargin />
+              </div>
+              <p className="text-center text-sm text-gray-400">
+                Scan this QR code with any phone camera or QR scanner to open the share link.
+              </p>
+            </motion.div>
           </div>
 
           {/* Download Options */}

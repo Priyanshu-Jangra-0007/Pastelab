@@ -82,13 +82,13 @@ export function PasteEditor() {
               <SelectTrigger id="expiration" className="w-[140px] border-white/10 bg-white/5 text-white">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-zinc-900">
-                <SelectItem value="10min">10 minutes</SelectItem>
-                <SelectItem value="30min">30 minutes</SelectItem>
-                <SelectItem value="1hour">1 hour</SelectItem>
-                <SelectItem value="6hours">6 hours</SelectItem>
-                <SelectItem value="12hours">12 hours</SelectItem>
-                <SelectItem value="1day">1 day</SelectItem>
+              <SelectContent className="border-white/10 bg-zinc-900 text-white">
+                <SelectItem value="10min" className="text-white">10 minutes</SelectItem>
+                <SelectItem value="30min" className="text-white">30 minutes</SelectItem>
+                <SelectItem value="1hour" className="text-white">1 hour</SelectItem>
+                <SelectItem value="6hours" className="text-white">6 hours</SelectItem>
+                <SelectItem value="12hours" className="text-white">12 hours</SelectItem>
+                <SelectItem value="1day" className="text-white">1 day</SelectItem>
               </SelectContent>
             </Select>
           </div>
