@@ -1,12 +1,11 @@
 [build]
-  command = "npm install --no-save lightningcss-linux-x64-gnu@1.30.1 @rollup/rollup-linux-x64-gnu@4.57.1 && npm run build"
+  command = "npm install --no-save lightningcss-linux-x64-gnu@1.30.1 @rollup/rollup-linux-x64-gnu@4.57.1 && cp node_modules/lightningcss-linux-x64-gnu/lightningcss.linux-x64-gnu.node node_modules/lightningcss/lightningcss.linux-x64-gnu.node && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
   NPM_FLAGS = "--include=optional"
-  CSS_TRANSFORMER_WASM = "1"
 
 [functions]
   directory = "netlify/functions"
