@@ -8,6 +8,9 @@ const envPublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
 const envServerUrl = import.meta.env.VITE_SERVER_URL?.trim();
 const functionName = import.meta.env.VITE_SUPABASE_FUNCTION_NAME?.trim() || 'server';
 const functionRoutePrefix = import.meta.env.VITE_SUPABASE_FUNCTION_ROUTE_PREFIX?.trim() || '';
+const useNetlifyProxy = import.meta.env.VITE_USE_NETLIFY_PROXY === 'true';
+const netlifyProxyUrl =
+  import.meta.env.VITE_NETLIFY_PROXY_URL?.trim() || '/.netlify/functions/supabase-proxy';
 
 const supabaseUrl =
   envSupabaseUrl ||
@@ -31,9 +34,14 @@ const normalizedRoutePrefix = functionRoutePrefix
   ? `/${functionRoutePrefix.replace(/^\/+|\/+$/g, '')}`
   : '';
 const normalizedServerUrlOverride = envServerUrl?.replace(/\/+$/g, '');
+const isNetlifyHost =
+  typeof window !== 'undefined' && window.location.hostname.endsWith('.netlify.app');
+const preferNetlifyProxy = !import.meta.env.DEV && (useNetlifyProxy || isNetlifyHost);
 const defaultServerUrl = import.meta.env.DEV
   ? '/api'
-  : `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`;
+  : preferNetlifyProxy
+    ? netlifyProxyUrl
+    : `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`;
 
 export const supabase = createClient(supabaseUrl, publicAnonKey);
 

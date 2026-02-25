@@ -107,6 +107,16 @@ Set the same `.env` variables in Vercel Project Settings so your frontend can re
 
 For a complete step-by-step guide including GitHub setup, custom domains, and troubleshooting, see the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
 
+## Netlify Deployment Notes
+
+If "Create Share" fails on Netlify with CORS/preflight errors, use the included Netlify proxy.
+
+1. Set `VITE_USE_NETLIFY_PROXY=true` in Netlify environment variables.
+2. Add server-side Netlify environment variables:
+   - `SUPABASE_FUNCTION_URL=https://<project-ref>.supabase.co/functions/v1/<function-name>`
+   - `SUPABASE_ANON_KEY=<your-anon-key>`
+3. Redeploy so `netlify/functions/supabase-proxy.js` is published.
+
 ## 📁 Project Structure
 
 ```
