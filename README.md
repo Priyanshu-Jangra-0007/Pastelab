@@ -61,13 +61,17 @@ npm install
 
 ### 3. Supabase Setup
 
-**Good news!** This application is pre-configured with Supabase. The backend is already set up and uses Supabase Edge Functions with a Key-Value store for data persistence. No additional database configuration is needed!
+This project uses Supabase Edge Functions + a KV table. Configure it with your own project:
 
-The application automatically:
-- Stores paste data in Supabase's KV store
-- Handles expiration and cleanup
-- Tracks view counts
-- Manages unique share codes
+1. Copy `.env.example` to `.env`
+2. Set:
+   - `VITE_SUPABASE_URL` (or `VITE_SUPABASE_PROJECT_ID`)
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SUPABASE_FUNCTION_NAME=server`
+   - optional: `VITE_SERVER_URL` for a full backend URL override
+3. Create the KV table by running the SQL file:
+   - `supabase/migrations/20260225_create_kv_store_491033a6.sql`
+4. Deploy the edge function from `supabase/functions/server` to your Supabase project
 
 ### 4. Run the Development Server
 
@@ -99,7 +103,7 @@ The build output will be in the `dist/` directory.
 4. Vercel auto-detects settings - just click **Deploy**!
 5. Your app is live! ✨
 
-**No environment variables needed** - Supabase connection is automatically configured through Figma Make.
+Set the same `.env` variables in Vercel Project Settings so your frontend can reach your Supabase backend in production.
 
 For a complete step-by-step guide including GitHub setup, custom domains, and troubleshooting, see the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
 

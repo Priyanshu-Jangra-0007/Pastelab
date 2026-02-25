@@ -1,5 +1,4 @@
-import { serverUrl } from '../config/supabase';
-import { publicAnonKey } from '/utils/supabase/info';
+import { publicAnonKey, serverUrl } from '../config/supabase';
 
 export interface PasteData {
   code: string;
@@ -8,6 +7,29 @@ export interface PasteData {
   expiresAt: string;
   views: number;
   syntaxHighlighting?: boolean;
+}
+
+async function getApiErrorMessage(response: Response): Promise<string> {
+  try {
+    const data = await response.json();
+    if (typeof data?.error === 'string' && data.error.trim()) {
+      return data.error;
+    }
+  } catch {
+    // Ignore JSON parse failures and fall back to status text below.
+  }
+
+  return `Request failed (${response.status} ${response.statusText})`;
+}
+
+function toActionableNetworkError(action: 'create' | 'load', error: unknown): Error {
+  if (error instanceof TypeError) {
+    return new Error(
+      `Unable to ${action} paste because the backend is unreachable. Check VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, and deployed function path.`
+    );
+  }
+
+  return error instanceof Error ? error : new Error(`Unable to ${action} paste.`);
 }
 
 // Generate a unique short code (client-side backup)
@@ -41,16 +63,16 @@ export async function createPaste(
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('Failed to create paste:', error);
-      throw new Error(error.error || 'Failed to create paste');
+      const errorMessage = await getApiErrorMessage(response);
+      console.error('Failed to create paste:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
     return data.code;
   } catch (error) {
     console.error('Error creating paste:', error);
-    throw error;
+    throw toActionableNetworkError('create', error);
   }
 }
 
@@ -68,15 +90,15 @@ export async function getPaste(code: string): Promise<PasteData | null> {
       if (response.status === 404) {
         return null;
       }
-      const error = await response.json();
-      console.error('Failed to get paste:', error);
-      throw new Error(error.error || 'Failed to get paste');
+      const errorMessage = await getApiErrorMessage(response);
+      console.error('Failed to get paste:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error getting paste:', error);
+    console.error('Error getting paste:', toActionableNetworkError('load', error));
     return null;
   }
 }

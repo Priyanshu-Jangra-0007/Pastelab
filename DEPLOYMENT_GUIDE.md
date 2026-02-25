@@ -70,9 +70,10 @@ Once your project is ready:
 
 **Keep these safe - you'll need them for Vercel!**
 
-### 2.3 Verify Edge Functions
+### 2.3 Deploy Edge Function + Table
 
-Your Supabase project automatically includes the Edge Functions needed for PasteLab (they're part of your codebase in `/supabase/functions/server/`). These will be deployed automatically.
+1. Run the SQL in `supabase/migrations/20260225_create_kv_store_491033a6.sql` to create the KV table
+2. Deploy the Edge Function from `/supabase/functions/server/` to your Supabase project (function name: `server`)
 
 ## Step 3: Deploy to Vercel
 
@@ -98,9 +99,10 @@ Vercel should auto-detect your settings, but verify:
 
 Before deploying, click "Environment Variables" and add:
 
-**Nothing to add!** 
-
-The Supabase connection is handled automatically through Figma Make's integration. Your application is already connected to Supabase.
+- `VITE_SUPABASE_URL` (or `VITE_SUPABASE_PROJECT_ID`)
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_FUNCTION_NAME` (use `server` unless you deploy with a different name)
+- `VITE_SUPABASE_FUNCTION_ROUTE_PREFIX` (optional; leave empty for default routes)
 
 ### 3.4 Deploy
 
@@ -217,9 +219,9 @@ pnpm run build
 ### "Failed to fetch" Errors
 
 **Check Supabase connection:**
-- Verify your project is connected in Figma Make
+- Verify your `.env`/Vercel env values are correct
 - Check Edge Function logs in Supabase Dashboard
-- Ensure KV store is accessible
+- Ensure `kv_store_491033a6` exists in your database
 
 ### Paste Not Saving/Loading
 
