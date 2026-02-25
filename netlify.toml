@@ -1,9 +1,9 @@
 [build]
-  command = "npm install --no-save lightningcss-linux-x64-gnu@1.30.1 @rollup/rollup-linux-x64-gnu@4.57.1 && LIGHTNING_NODE=$(find node_modules -type f -name 'lightningcss.linux-x64-gnu.node' | head -n 1) && [ -n \"$LIGHTNING_NODE\" ] && cp \"$LIGHTNING_NODE\" node_modules/lightningcss/lightningcss.linux-x64-gnu.node && npm run build"
+  command = "npm install --no-save @tailwindcss/oxide-linux-x64-gnu@4.1.12 lightningcss-linux-x64-gnu@1.30.1 @rollup/rollup-linux-x64-gnu@4.57.1 && LIGHTNING_NODE=$(find node_modules -type f -name 'lightningcss.linux-x64-gnu.node' | head -n 1) && [ -n \"$LIGHTNING_NODE\" ] && cp \"$LIGHTNING_NODE\" node_modules/lightningcss/lightningcss.linux-x64-gnu.node && npm run build"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
   NPM_VERSION = "9"
   NPM_FLAGS = "--include=optional"
 
