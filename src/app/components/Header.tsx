@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { FileText, QrCode, Link2 } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Header() {
   return (
@@ -16,22 +17,9 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Right Icons */}
-          <div className="flex items-center space-x-4">
-            <Link 
-              to="/qr-generator" 
-              className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
-            >
-              <QrCode className="h-4 w-4" />
-              <span className="hidden sm:inline">QR Generator</span>
-            </Link>
-            <Link 
-              to="/url-shortener" 
-              className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
-            >
-              <Link2 className="h-4 w-4" />
-              <span className="hidden sm:inline">URL Shortener</span>
-            </Link>
+          {/* Right Actions */}
+          <div className="flex items-center">
+            <ThemeToggle />
           </div>
         </div>
       </div>
