@@ -32,7 +32,7 @@ export function PasteEditor() {
     setLoading(true);
     try {
       const code = await createPaste(content, expiration, syntaxHighlighting);
-      navigate(`/share/${code}`);
+      navigate(`/${code}`);
       toast.success('Share link created!');
     } catch (error) {
       console.error('Error creating paste:', error);

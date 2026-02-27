@@ -20,7 +20,7 @@ export function ShareView() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const shareUrl = `${window.location.origin}/share/${code}`;
+  const shareUrl = `${window.location.origin}/${code}`;
 
   useEffect(() => {
     const fetchPaste = async () => {

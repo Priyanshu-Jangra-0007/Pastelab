@@ -12,10 +12,6 @@ export const router = createBrowserRouter([
     Component: Home,
   },
   {
-    path: '/share/:code',
-    Component: ShareView,
-  },
-  {
     path: '/privacy',
     Component: PrivacyPolicy,
   },
@@ -26,6 +22,10 @@ export const router = createBrowserRouter([
   {
     path: '/url-shortener',
     Component: URLShortener,
+  },
+  {
+    path: '/:code',
+    Component: ShareView,
   },
   {
     path: '*',
