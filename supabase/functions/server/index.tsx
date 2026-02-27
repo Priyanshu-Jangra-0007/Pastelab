@@ -11,7 +11,7 @@ app.use('*', logger(console.log));
 
 // Generate a unique short code
 function generateShortCode(): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const chars = '0123456789';
   let result = '';
   for (let i = 0; i < 4; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
