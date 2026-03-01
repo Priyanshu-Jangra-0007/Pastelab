@@ -1,4 +1,4 @@
-# PasteLab 
+# PasteLab
 
 **Paste. Share. Done.**
 
