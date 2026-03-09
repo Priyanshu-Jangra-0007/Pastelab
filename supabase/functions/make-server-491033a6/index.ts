@@ -13,7 +13,7 @@ app.use('*', logger(console.log));
 function generateShortCode(): string {
   const chars = '0123456789';
   let result = '';
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 2; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;

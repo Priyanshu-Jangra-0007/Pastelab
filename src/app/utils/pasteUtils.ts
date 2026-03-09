@@ -1,4 +1,4 @@
-import { publicAnonKey, serverUrl } from '../config/supabase';
+import { supabase } from '../config/supabase';
 
 export interface PasteData {
   code: string;
@@ -9,21 +9,11 @@ export interface PasteData {
   syntaxHighlighting?: boolean;
 }
 
-async function getApiErrorMessage(response: Response): Promise<string> {
-  try {
-    const data = await response.json();
-    if (typeof data?.error === 'string' && data.error.trim()) {
-      return data.error;
-    }
-  } catch {
-    // Ignore JSON parse failures and fall back to status text below.
-  }
-
-  return `Request failed (${response.status} ${response.statusText})`;
-}
+const KV_TABLE = 'kv_store_491033a6';
+const MAX_CODE_ATTEMPTS = 30;
 
 function toActionableNetworkError(action: 'create' | 'load', error: unknown): Error {
-  if (error instanceof TypeError) {
+  if (error instanceof TypeError || (error instanceof Error && /network|fetch/i.test(error.message))) {
     return new Error(
       `Unable to ${action} paste because the backend is unreachable. Check VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, and deployed function path.`
     );
@@ -32,11 +22,41 @@ function toActionableNetworkError(action: 'create' | 'load', error: unknown): Er
   return error instanceof Error ? error : new Error(`Unable to ${action} paste.`);
 }
 
+function calculateExpiresAt(duration: string): string {
+  const now = new Date();
+
+  switch (duration) {
+    case '10min':
+      now.setMinutes(now.getMinutes() + 10);
+      break;
+    case '30min':
+      now.setMinutes(now.getMinutes() + 30);
+      break;
+    case '1hour':
+      now.setHours(now.getHours() + 1);
+      break;
+    case '6hours':
+      now.setHours(now.getHours() + 6);
+      break;
+    case '12hours':
+      now.setHours(now.getHours() + 12);
+      break;
+    case '1day':
+      now.setDate(now.getDate() + 1);
+      break;
+    default:
+      now.setHours(now.getHours() + 1);
+      break;
+  }
+
+  return now.toISOString();
+}
+
 // Generate a unique short code (client-side backup)
 export function generateShortCode(): string {
   const chars = '0123456789';
   let result = '';
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 2; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
@@ -49,27 +69,43 @@ export async function createPaste(
   syntaxHighlighting: boolean = false
 ): Promise<string> {
   try {
-    const response = await fetch(`${serverUrl}/paste`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${publicAnonKey}`
-      },
-      body: JSON.stringify({
-        content,
-        expiration,
-        syntaxHighlighting
-      })
-    });
-
-    if (!response.ok) {
-      const errorMessage = await getApiErrorMessage(response);
-      console.error('Failed to create paste:', errorMessage);
-      throw new Error(errorMessage);
+    const trimmedContent = content.trim();
+    if (!trimmedContent) {
+      throw new Error('Content is required');
     }
 
-    const data = await response.json();
-    return data.code;
+    const createdAt = new Date().toISOString();
+    const expiresAt = calculateExpiresAt(expiration || '1hour');
+
+    for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt++) {
+      const code = generateShortCode();
+      const pasteData: PasteData = {
+        code,
+        content: trimmedContent,
+        createdAt,
+        expiresAt,
+        views: 0,
+        syntaxHighlighting
+      };
+
+      const { error } = await supabase.from(KV_TABLE).insert({
+        key: code,
+        value: pasteData
+      });
+
+      if (!error) {
+        return code;
+      }
+
+      // Unique violation means generated code already exists; retry.
+      if (error.code === '23505') {
+        continue;
+      }
+
+      throw new Error(error.message);
+    }
+
+    throw new Error('Unable to allocate a unique 2-digit code. Please retry.');
   } catch (error) {
     console.error('Error creating paste:', error);
     throw toActionableNetworkError('create', error);
@@ -79,24 +115,36 @@ export async function createPaste(
 // Get a paste by code
 export async function getPaste(code: string): Promise<PasteData | null> {
   try {
-    const response = await fetch(`${serverUrl}/paste/${code}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${publicAnonKey}`
-      }
-    });
+    const { data, error } = await supabase.from(KV_TABLE).select('value').eq('key', code).maybeSingle();
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
-      const errorMessage = await getApiErrorMessage(response);
-      console.error('Failed to get paste:', errorMessage);
-      throw new Error(errorMessage);
+    if (error) {
+      console.error('Failed to get paste:', error.message);
+      throw new Error(error.message);
     }
 
-    const data = await response.json();
-    return data;
+    const pasteData = data?.value as PasteData | undefined;
+    if (!pasteData) {
+      return null;
+    }
+
+    const now = new Date();
+    const expiresAt = new Date(pasteData.expiresAt);
+    if (expiresAt < now) {
+      await supabase.from(KV_TABLE).delete().eq('key', code);
+      return null;
+    }
+
+    const updatedData: PasteData = {
+      ...pasteData,
+      views: (pasteData.views || 0) + 1
+    };
+
+    const { error: updateError } = await supabase.from(KV_TABLE).update({ value: updatedData }).eq('key', code);
+    if (updateError) {
+      console.error('Failed to update view count:', updateError.message);
+    }
+
+    return updatedData;
   } catch (error) {
     console.error('Error getting paste:', toActionableNetworkError('load', error));
     return null;
