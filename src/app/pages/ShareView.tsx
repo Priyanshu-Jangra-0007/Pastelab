@@ -163,41 +163,6 @@ export function ShareView() {
             </div>
           </div>
 
-          {/* Share Link Card */}
-          <div className="mb-6 rounded-2xl border border-white/10 bg-white/5 p-6">
-            <label className="mb-2 block text-sm font-medium text-gray-400">Share Link</label>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <input
-                type="text"
-                value={shareUrl}
-                readOnly
-                className="flex-1 rounded-lg border border-white/10 bg-black/40 px-4 py-2 text-white"
-              />
-              <Button
-                onClick={handleCopy}
-                variant="outline"
-                className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                {copied ? 'Copied!' : 'Copy'}
-              </Button>
-            </div>
-
-            {/* QR Code */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 flex flex-col items-center justify-center gap-3"
-            >
-              <div className="rounded-xl bg-white p-4">
-                <QRCodeSVG value={shareUrl} size={200} level="H" includeMargin />
-              </div>
-              <p className="text-center text-sm text-gray-400">
-                Scan this QR code with any phone camera or QR scanner to open the share link.
-              </p>
-            </motion.div>
-          </div>
-
           {/* Download Options */}
           <div className="mb-6 flex flex-wrap gap-2">
             <Button
@@ -282,6 +247,41 @@ export function ShareView() {
                 </ReactMarkdown>
               </div>
             )}
+          </div>
+
+          {/* Share Link Card */}
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+            <label className="mb-2 block text-sm font-medium text-gray-400">Share Link</label>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                type="text"
+                value={shareUrl}
+                readOnly
+                className="flex-1 rounded-lg border border-white/10 bg-black/40 px-4 py-2 text-white"
+              />
+              <Button
+                onClick={handleCopy}
+                variant="outline"
+                className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+              >
+                <Copy className="mr-2 h-4 w-4" />
+                {copied ? 'Copied!' : 'Copy'}
+              </Button>
+            </div>
+
+            {/* QR Code */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 flex flex-col items-center justify-center gap-3"
+            >
+              <div className="rounded-xl bg-white p-4">
+                <QRCodeSVG value={shareUrl} size={200} level="H" includeMargin />
+              </div>
+              <p className="text-center text-sm text-gray-400">
+                Scan this QR code with any phone camera or QR scanner to open the share link.
+              </p>
+            </motion.div>
           </div>
 
           {/* Create New Button */}
