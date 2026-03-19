@@ -13,6 +13,12 @@ const KV_TABLE = 'kv_store_491033a6';
 const MAX_CODE_ATTEMPTS = 30;
 
 function toActionableNetworkError(action: 'create' | 'load', error: unknown): Error {
+  if (error instanceof Error && error.name === 'AbortError') {
+    return new Error(
+      `Unable to ${action} paste because the request was interrupted. Please retry, and if it keeps happening check your deployed Supabase URL and network connection.`
+    );
+  }
+
   if (error instanceof TypeError || (error instanceof Error && /network|fetch/i.test(error.message))) {
     return new Error(
       `Unable to ${action} paste because the backend is unreachable. Check VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, and deployed function path.`

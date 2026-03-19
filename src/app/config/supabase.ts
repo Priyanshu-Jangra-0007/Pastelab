@@ -43,7 +43,17 @@ const defaultServerUrl = import.meta.env.DEV
     ? netlifyProxyUrl
     : `${supabaseUrl}/functions/v1/${functionName}${normalizedRoutePrefix}`;
 
-export const supabase = createClient(supabaseUrl, publicAnonKey);
+export const supabase = createClient(supabaseUrl, publicAnonKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+  db: {
+    schema: 'public',
+    timeout: 15000,
+  },
+});
 
 // Server API base URL: https://<project>.supabase.co/functions/v1/<functionName>[/optional-prefix]
 export const serverUrl =
