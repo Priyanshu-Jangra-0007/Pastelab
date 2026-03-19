@@ -1,7 +1,9 @@
 import { Link, NavLink } from 'react-router';
-import { FileText, QrCode, SquarePen } from 'lucide-react';
+import { QrCode, SquarePen } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { cn } from './ui/utils';
+import lightModeLogo from '../../../img/light_mode.png';
+import darkModeLogo from '../../../img/dark_mode.png';
 
 const navItems = [
   {
@@ -24,13 +26,17 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-3">
           {/* Logo + Tool Nav */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link to="/" className="flex items-center space-x-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-              <FileText className="h-6 w-6 text-white" />
-            </div>
-            <span className="hidden bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-2xl font-bold text-transparent sm:inline">
-              PasteLab
-            </span>
+            <Link to="/" className="flex items-center">
+              <img
+                src={lightModeLogo}
+                alt="PasteLab"
+                className="block h-8 w-auto dark:hidden sm:h-9"
+              />
+              <img
+                src={darkModeLogo}
+                alt="PasteLab"
+                className="hidden h-8 w-auto dark:block sm:h-9"
+              />
             </Link>
 
             <nav className="flex items-center gap-1">

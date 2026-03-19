@@ -6,6 +6,7 @@ import { HowItWorksSection } from '../components/HowItWorksSection';
 import { FeaturesSection } from '../components/FeaturesSection';
 import { UseCasesSection } from '../components/UseCasesSection';
 import { FAQSection } from '../components/FAQSection';
+import { AboutCreatorSection } from '../components/AboutCreatorSection';
 
 export function Home() {
   return (
@@ -42,6 +43,9 @@ export function Home() {
 
       {/* FAQ */}
       <FAQSection />
+
+      {/* Creator */}
+      <AboutCreatorSection />
 
       <Footer />
     </div>
