@@ -178,4 +178,4 @@ For issues or questions, please open an issue on GitHub.
 
 ---
 
-**Made with ❤️ for the developer community**
+**Made with ❤️ by Priyanshu Jangra for the developer community**
